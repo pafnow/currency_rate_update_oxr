@@ -77,6 +77,13 @@ class ResCurrencyRateProviderOXR(models.Model):
                 for currency, rate in data['rates'].items():
                     date_content[currency] = rate / base_currency_rate
 
+                    if currency == 'XAU':
+                        c = self.env['res.currency'].search([('name', '=', currency)])
+                        if len(c) and c[0].symbol == 'kg':
+                            date_content[currency] = date_content[currency] * 0.031
+                        if len(c) and c[0].symbol == 'g':
+                            date_content[currency] = date_content[currency] * 31.0
+
             date += timedelta(days=1)
 
         return content
